@@ -1,0 +1,4 @@
+node_modules/
+lib/
+process.lua
+*.log
