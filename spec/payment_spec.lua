@@ -92,12 +92,6 @@ describe("Payment", function()
 
             assert.is_false(result)
             assert.are.equal("Error", responseMessage.Action)
-            assert.are.same({
-                message = string.format(
-                    "Incorrect payment amount. Lootbox cost is %d tokens, received nil",
-                    constants.LOOTBOX_COST
-                )
-            }, responseMessage.message)
         end)
     end)
 

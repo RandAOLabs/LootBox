@@ -16,17 +16,25 @@ end
 
 local function checkPaid(msg)
     local value = tonumber(msg.Quantity)
-    if not value or not isInteger(value) or value ~= constants.LOOTBOX_COST then
-        ao.send(ao_utils.sendResponse(
-            msg.From,
-            "Error",
-            {
-                message = string.format(
-                    "Incorrect payment amount. Lootbox cost is %d tokens, received %d",
-                    constants.LOOTBOX_COST,
-                    value
-                )
-            }
+
+    -- Handle non-numeric values
+    if not value then
+        ao_utils.sendError(msg.From, "Invalid payment amount. Must be a number.")
+        return false
+    end
+
+    -- Handle non-integer values
+    if not isInteger(value) then
+        ao_utils.sendError(msg.From, "Invalid payment amount. Must be an integer.")
+        return false
+    end
+
+    -- Handle incorrect payment amount
+    if value ~= constants.LOOTBOX_COST then
+        ao_utils.sendError(msg.From, string.format(
+            "Incorrect payment amount. Lootbox cost is %d tokens, received %d",
+            constants.LOOTBOX_COST,
+            value
         ))
         return false
     end
