@@ -1,3 +1,19 @@
+--- Helper function to send a response
+local function sendResponse(target, action, data)
+    return {
+        Target = target,
+        Action = action,
+        Data = json.encode(data)
+    }
+end
+
+--- Helper function to send an error message
+local function sendError(target, message)
+    ao.send(sendResponse(target, "Error", {
+        message = message
+    }))
+end
+
 --- Helper function to wrap handlers to catch errors before computation
 local function wrapHandler(handlerFn)
     return function(msg)
@@ -19,22 +35,6 @@ local function wrapHandler(handlerFn)
             end
         end
     end
-end
-
---- Helper function to send a response
-local function sendResponse(target, action, data)
-    return {
-        Target = target,
-        Action = action,
-        Data = json.encode(data)
-    }
-end
-
---- Helper function to send an error message
-local function sendError(target, message)
-    ao.send(sendResponse(target, "Error", {
-        message = message
-    }))
 end
 
 return {

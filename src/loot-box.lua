@@ -1,10 +1,9 @@
 local prizes = require('src.prizes')
 local tokenSender = require('src.utils.token-sender')
+local randomModule = require('src.utils.random')()
 
-local function generateRandomNumber()
-    -- TODO: Implement random number generation
-    return 1234
-end
+-- Store callback IDs for active loot box requests
+local pendingLootboxes = {}
 
 local function selectRandomPrize(randomNumber)
     local availablePrizes = prizes.getPrizeTokens()
@@ -16,15 +15,24 @@ local function selectRandomPrize(randomNumber)
 end
 
 local function initiateLootbox(msg)
-    local randomNumber = generateRandomNumber()
-    -- Store random number for later use in fulfillLootbox
-    -- TODO: Implement storage/retrieval of random number
+    local callbackId = randomModule.generateUUID()
+    pendingLootboxes[callbackId] = msg.From
+    randomModule.requestRandom(callbackId)
     return true
 end
 
 local function fulfillLootbox(msg)
-    -- TODO: Extract entropy from message
-    local randomNumber = 1234 -- Placeholder until we implement entropy extraction
+    local callbackId, entropy = randomModule.processRandomResponse(msg.From, msg.Data)
+    local sender = pendingLootboxes[callbackId]
+    if not sender then
+        return false, "No pending loot box found for this callback"
+    end
+
+    if not entropy then
+        return false, "Invalid entropy value received"
+    end
+
+    local randomNumber = math.floor(entropy)
 
     local selectedPrize = selectRandomPrize(randomNumber)
     if not selectedPrize then
