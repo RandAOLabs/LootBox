@@ -27,8 +27,10 @@ local function removePrize(tokenId)
     return false
 end
 
-local function listAvailablePrizes()
+local function listAvailablePrizes(msg)
     local available = getPrizeTokens()
+    local response = { prizes = available }
+    msg.reply({ Data = ao.json.encode(response) })
     if #available == 0 then
         return false, "No prizes available"
     end
