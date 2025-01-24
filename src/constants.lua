@@ -3,5 +3,5 @@ return {
     LOOTBOX_COST = 1000, -- Example value, adjust as needed
 
     -- Token that must be used for transactions
-    TokenInUse = "wOrb8b_V8QixWyXZub48Ki5B6OIDyf_p1ngoonsaRpQ" -- Replace with actual token ID
+    TokenInUse = "MFkhHzNJolksLqLOhRIaHhSPY20GUPi32uRGG0dZWDw" -- Replace with actual token ID
 }
