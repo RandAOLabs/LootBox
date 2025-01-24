@@ -23,8 +23,8 @@ end
 
 local function fulfillLootbox(msg)
     local callbackId, entropy = randomModule.processRandomResponse(msg.From, msg.Data)
-    local sender = pendingLootboxes[callbackId]
-    if not sender then
+    local from = pendingLootboxes[callbackId]
+    if not from then
         return false, "No pending loot box found for this callback"
     end
 
@@ -36,16 +36,29 @@ local function fulfillLootbox(msg)
 
     local selectedPrize = selectRandomPrize(randomNumber)
     if not selectedPrize then
+        print("No prizes available")
         return false, "No prizes available"
     end
 
     -- Send the selected prize token to the winner and remove it from available prizes
-    tokenSender.sendTokens(selectedPrize, msg.Sender, 1, "Congratulations! You won this prize from the Loot Box!")
+    tokenSender.sendTokens(selectedPrize, from, 1, "Congratulations! You won this prize from the Loot Box!")
     prizes.removePrize(selectedPrize)
+
+    -- Remove the lootbox from pending list
+    pendingLootboxes[callbackId] = nil
     return true
+end
+
+local function listPendingLootboxes()
+    local pending = {}
+    for id, from in pairs(pendingLootboxes) do
+        table.insert(pending, { id = id, From = from })
+    end
+    return pending
 end
 
 return {
     initiateLootbox = initiateLootbox,
-    fulfillLootbox = fulfillLootbox
+    fulfillLootbox = fulfillLootbox,
+    listPendingLootboxes = listPendingLootboxes
 }

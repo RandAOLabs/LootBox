@@ -27,9 +27,18 @@ local function removePrize(tokenId)
     return false
 end
 
+local function listAvailablePrizes()
+    local available = getPrizeTokens()
+    if #available == 0 then
+        return false, "No prizes available"
+    end
+    return true, { prizes = available }
+end
+
 return {
     isPrizeToken = isPrizeToken,
     addPrizeToken = addPrizeToken,
     getPrizeTokens = getPrizeTokens,
-    removePrize = removePrize
+    removePrize = removePrize,
+    listAvailablePrizes = listAvailablePrizes
 }
